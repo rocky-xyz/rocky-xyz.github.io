@@ -14,10 +14,11 @@
 <meta property="og:description" content="Abstract: This report aims to analyze a specific type of integer sequence and derive all possible hierarchical structures for it. The core of the problem is to reconstruct the implicit, nested tree-li">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-10-12T22:30:00.000Z">
-<meta property="article:modified_time" content="2025-10-12T14:11:03.900Z">
+<meta property="article:modified_time" content="2025-10-13T01:51:54.837Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Algorithm">
 <meta property="article:tag" content="Backtracking">
+<meta property="article:tag" content="CSP">
 <meta property="article:tag" content="DFS">
 <meta property="article:tag" content="Recursion">
 <meta name="twitter:card" content="summary">
@@ -107,7 +108,7 @@
 <hr>
 <h3 id="1-Problem-Description"><a href="#1-Problem-Description" class="headerlink" title="1. Problem Description"></a><strong>1. Problem Description</strong></h3><p>Given an article that uses a consistent numbering format for its sections, how can we reconstruct its implicit tree-like hierarchical structure?</p>
 <p>For example, given a sequence like:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1. xx</span><br><span class="line">2. xx</span><br><span class="line">3. xx</span><br><span class="line">4. xx</span><br><span class="line">5. xx</span><br><span class="line">6. xx</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1 xx</span><br><span class="line">2 xx</span><br><span class="line">1 xx</span><br><span class="line">2 xx</span><br><span class="line">3 xx</span><br><span class="line">1 xx</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p>This can be abstracted as follows: given a sequence of positive integers (e.g., <code>[1, 2, 1, 2, 3, 1, 2, 3, 4, 3]</code>), we need to assign a level to each number in the sequence. This level is also represented by a sequence of positive integers, indicating its depth in the document structure (e.g., level-1 heading, level-2 heading, etc.). For instance, <code>[1, 1, 2, 2, 2, 3, 3, 3, 2, 1]</code> and <code>[1, 1, 2, 2, 2, 3, 3, 3, 3, 1]</code> are both valid solutions.</p>
 <p>We have determined that a valid hierarchical structure must adhere to the following complete set of constraint rules:</p>
@@ -165,34 +166,16 @@
 </ul>
 </li>
 </ol>
-<h4 id="Core-Idea-of-the-Algorithm"><a href="#Core-Idea-of-the-Algorithm" class="headerlink" title="Core Idea of the Algorithm"></a><strong>Core Idea of the Algorithm</strong></h4><ol>
-<li><p><strong>Step-by-Step Construction</strong>: Starting from the first element of the sequence, sequentially attempt to assign a level from its domain to each element.</p>
-</li>
-<li><p><strong>Constraint Checking</strong>: Whenever a new level is assigned, check if it violates the “Same-Level Order Rule.”</p>
-</li>
-<li><p><strong>Advancing and Pruning</strong>:</p>
-<ul>
-<li><p>If the current attempt does not violate any constraints, accept this assignment and proceed recursively to the next element (advancing down the decision tree).</p>
-</li>
-<li><p>If the current attempt violates a constraint, immediately discard this choice and try other possible levels for the current element. This process is called “pruning” because it avoids exploring invalid solution spaces.</p>
-</li>
-</ul>
-</li>
-<li><p><strong>Backtracking</strong>: When all possible levels for an element have been tried, or after a successful recursive call returns, the program “undoes” the level assignment for the current element and returns to the previous element to let it try its next possibility.</p>
-</li>
-<li><p><strong>Recording Solutions</strong>: When the algorithm successfully assigns a level to every element in the sequence (i.e., the recursion reaches the end of the sequence), it means a valid solution has been found.</p>
-</li>
-</ol>
-<h4 id="Algorithm-Implementation-Python"><a href="#Algorithm-Implementation-Python" class="headerlink" title="Algorithm Implementation (Python)"></a><strong>Algorithm Implementation (Python)</strong></h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">def find_all_structures(sequence):</span><br><span class="line"></span><br><span class="line">    if not sequence or sequence[0] != 1:</span><br><span class="line">        return []</span><br><span class="line"></span><br><span class="line">    solutions = []</span><br><span class="line"></span><br><span class="line">    def backtrack(index, current_levels):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        The core backtracking function.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        # Base case: a solution is found when all numbers are processed</span><br><span class="line">        if index == len(sequence):</span><br><span class="line">            solutions.append(list(current_levels))</span><br><span class="line">            return</span><br><span class="line"></span><br><span class="line">        current_num = sequence[index]</span><br><span class="line">        prev_level = current_levels[index - 1]</span><br><span class="line"></span><br><span class="line">        # Case 1: The current number is 1 (rule is fixed)</span><br><span class="line">        if current_num == 1:</span><br><span class="line">            new_level = prev_level + 1</span><br><span class="line">            current_levels.append(new_level)</span><br><span class="line">            backtrack(index + 1, current_levels)</span><br><span class="line">            current_levels.pop()  # Backtrack</span><br><span class="line">            return</span><br><span class="line"></span><br><span class="line">        # Case 2: The current number is not 1 (branching may occur)</span><br><span class="line">        for potential_level in range(1, prev_level + 1):</span><br><span class="line">            # Constraint Check: Find the immediate older sibling to validate the same-level order rule</span><br><span class="line">            last_sibling_value = -1</span><br><span class="line">            level_exists = False</span><br><span class="line">            for i in range(index - 1, -1, -1):</span><br><span class="line">                if current_levels[i] == potential_level:</span><br><span class="line">                    last_sibling_value = sequence[i]</span><br><span class="line">                    level_exists = True</span><br><span class="line">                    break</span><br><span class="line">            </span><br><span class="line">            is_valid = False</span><br><span class="line">            if level_exists:</span><br><span class="line">                # Rule #3: Same-level order must be strictly and sequentially increasing</span><br><span class="line">                if current_num == last_sibling_value + 1:</span><br><span class="line">                    is_valid = True</span><br><span class="line">            </span><br><span class="line">            if is_valid:</span><br><span class="line">                current_levels.append(potential_level)</span><br><span class="line">                backtrack(index + 1, current_levels)</span><br><span class="line">                current_levels.pop() # Backtrack</span><br><span class="line">                </span><br><span class="line">    backtrack(1, [1])</span><br><span class="line">    return solutions</span><br></pre></td></tr></table></figure>
+<h4 id="Algorithm-Implementation-Python"><a href="#Algorithm-Implementation-Python" class="headerlink" title="Algorithm Implementation (Python)"></a><strong>Algorithm Implementation (Python)</strong></h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">def find_all_structures(sequence):</span><br><span class="line"></span><br><span class="line">    if not sequence or sequence[0] != 1:</span><br><span class="line">        return []</span><br><span class="line"></span><br><span class="line">    solutions = []</span><br><span class="line"></span><br><span class="line">    def backtrack(index, current_levels):</span><br><span class="line">        if index == len(sequence):</span><br><span class="line">            solutions.append(list(current_levels))</span><br><span class="line">            return</span><br><span class="line"></span><br><span class="line">        current_num = sequence[index]</span><br><span class="line">        prev_level = current_levels[index - 1]</span><br><span class="line"></span><br><span class="line">        if current_num == 1:</span><br><span class="line">            new_level = prev_level + 1</span><br><span class="line">            current_levels.append(new_level)</span><br><span class="line">            backtrack(index + 1, current_levels)</span><br><span class="line">            current_levels.pop()</span><br><span class="line">            return</span><br><span class="line"></span><br><span class="line">        for potential_level in range(1, prev_level + 1):</span><br><span class="line">            last_sibling_value = -1</span><br><span class="line">            level_exists = False</span><br><span class="line">            for i in range(index - 1, -1, -1):</span><br><span class="line">                if current_levels[i] == potential_level:</span><br><span class="line">                    last_sibling_value = sequence[i]</span><br><span class="line">                    level_exists = True</span><br><span class="line">                    break</span><br><span class="line">            </span><br><span class="line">            is_valid = False</span><br><span class="line">            if level_exists:</span><br><span class="line">                if current_num == last_sibling_value + 1:</span><br><span class="line">                    is_valid = True</span><br><span class="line">            </span><br><span class="line">            if is_valid:</span><br><span class="line">                current_levels.append(potential_level)</span><br><span class="line">                backtrack(index + 1, current_levels)</span><br><span class="line">                current_levels.pop()</span><br><span class="line">                </span><br><span class="line">    backtrack(1, [1])</span><br><span class="line">    return solutions</span><br></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2025/10/12/analysis-of-title-hierarchy-structure/" data-id="cuid0X0Hi1TmdcwaXtdYjbfoO" data-title="Analysis of Title Hierarchy Structure" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2025/10/12/analysis-of-title-hierarchy-structure/" data-id="cuidDUTdc1xeHpiI4wfwoOZtr" data-title="Analysis of Title Hierarchy Structure" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Backtracking/" rel="tag">Backtracking</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/" rel="tag">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Recursion/" rel="tag">Recursion</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Backtracking/" rel="tag">Backtracking</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSP/" rel="tag">CSP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/" rel="tag">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Recursion/" rel="tag">Recursion</a></li></ul>
 
     </footer>
   </div>
@@ -200,11 +183,15 @@
     
 <nav id="article-nav">
   
-  
-    <a href="/2025/10/12/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Hello World</div>
+    <a href="/2025/10/13/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Hello World
+        
+      </div>
     </a>
+  
   
 </nav>
 
@@ -230,7 +217,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtracking/" rel="tag">Backtracking</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/" rel="tag">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Recursion/" rel="tag">Recursion</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtracking/" rel="tag">Backtracking</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSP/" rel="tag">CSP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/" rel="tag">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Recursion/" rel="tag">Recursion</a></li></ul>
     </div>
   </div>
 
@@ -240,7 +227,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Algorithm/" style="font-size: 10px;">Algorithm</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/DFS/" style="font-size: 10px;">DFS</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a>
+      <a href="/tags/Algorithm/" style="font-size: 10px;">Algorithm</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/CSP/" style="font-size: 10px;">CSP</a> <a href="/tags/DFS/" style="font-size: 10px;">DFS</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a>
     </div>
   </div>
 
@@ -262,11 +249,11 @@
       <ul>
         
           <li>
-            <a href="/2025/10/12/analysis-of-title-hierarchy-structure/">Analysis of Title Hierarchy Structure</a>
+            <a href="/2025/10/13/hello-world/">Hello World</a>
           </li>
         
           <li>
-            <a href="/2025/10/12/hello-world/">Hello World</a>
+            <a href="/2025/10/12/analysis-of-title-hierarchy-structure/">Analysis of Title Hierarchy Structure</a>
           </li>
         
       </ul>
