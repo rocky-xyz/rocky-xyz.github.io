@@ -73,12 +73,12 @@
   
     <article id="post-rbac-vs-abac" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2025/10/16/rbac-vs-abac/" class="article-date">
-  <time class="dt-published" datetime="2025-10-16T16:30:00.000Z" itemprop="datePublished">2025-10-16</time>
+    <a href="/2025/10/28/rbac-vs-abac/" class="article-date">
+  <time class="dt-published" datetime="2025-10-28T16:30:00.000Z" itemprop="datePublished">2025-10-28</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Database/">Database</a>►<a class="article-category-link" href="/categories/Database/System-Architecture/">System Architecture</a>
+    <a class="article-category-link" href="/categories/Database/">Database</a>
   </div>
 
   </div>
@@ -89,7 +89,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/10/16/rbac-vs-abac/">RBAC vs ABAC</a>
+      <a class="p-name article-title" href="/2025/10/28/rbac-vs-abac/">RBAC vs ABAC</a>
     </h1>
   
 
@@ -98,10 +98,10 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <hr>
-<h2 id="1-Requirement-Analysis"><a href="#1-Requirement-Analysis" class="headerlink" title="1.  Requirement Analysis"></a>1.  Requirement Analysis</h2><p><strong>Static and dynamic permissions</strong></p>
+<h2 id="1-Requirement-Analysis"><a href="#1-Requirement-Analysis" class="headerlink" title="1.  Requirement Analysis"></a>1.  Requirement Analysis</h2><p><strong>Two steps determine</strong></p>
 <ul>
-<li>Static (RBAC): <code>permissions</code> table: Static definition of operations (e.g., <code>Model: Create</code>)</li>
-<li>Dynamic (ABAC): <code>policies</code> table: Defines the conditions that must be met when performing these operations (e.g., only allow reading models created by oneself, requiring both model and user <code>attributes</code>), or used to handle dynamically changing attributes (<code>IP, timestamp</code>)</li>
+<li>RBAC: <code>permissions</code> table: Only determine whether this role can perform <strong>basic</strong> operations, such as Viewers can Read, but can not  Write.</li>
+<li>ABAC: <code>policies</code> table: Determine whether the operation of this role is constrained, if it passes the RBAC judgment. For example, if this role is Viewer, then determine whether the knowledge base is public. If it is not, determine whether it is a departmental knowledge base. If it is, determine whether the user’s department is the same as the knowledge base department attribute, or whether it is used to handle dynamically changing attributes (<code>IP, timestamp</code>)</li>
 </ul>
 <p><strong>Role inheritance</strong></p>
 <ul>
@@ -122,28 +122,34 @@
 <ul>
 <li>A <code>projects</code> table needs to be maintained, which is associated with the <code>users</code> table</li>
 </ul>
+<p><strong>Data analysis</strong></p>
+<ul>
+<li>Establish a user behavior log table named <code>logs</code> for future design, which is associated with <code>users</code>, serving as the foundation for user personas, tagging systems, and OLAP layered construction</li>
+</ul>
 <hr>
-<h2 id="2-Schema"><a href="#2-Schema" class="headerlink" title="2. Schema"></a>2. Schema</h2><img src="/2025/10/16/rbac-vs-abac/img1.png" class="" title="ABAC_schema">
+<h2 id="2-Schema"><a href="#2-Schema" class="headerlink" title="2. Schema"></a>2. Schema</h2><img src="/2025/10/28/rbac-vs-abac/img2.png" class="" title="ABAC_schema">
 
 <hr>
-<h2 id="3-process"><a href="#3-process" class="headerlink" title="3. process"></a>3. process</h2><p>Assuming that the user wants to call the API of the algorithm platform to train the model, and this API can only be called by the <code>102</code> role of the R&amp;D department on IP <code>10.00.0\8</code><br>Let’s not consider the ‘teams’ table for now<br>After user <code>rocky</code> (<code>role: interns</code>) logs in, the system first queries the <code>roles</code> table to find the associated roles (which may be multiple)</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> role_id <span class="keyword">FROM</span> user_roles <span class="keyword">WHERE</span> user_id <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"><span class="comment">-- result 101</span></span><br></pre></td></tr></table></figure>
-<p>Starting from the direct role <code>101</code>, recursively obtain all inherited roles through <code>parent_id</code></p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--Recursive function</span></span><br><span class="line"><span class="comment">-- result 101, 102</span></span><br></pre></td></tr></table></figure>
-<p>Search the <code>permissions</code> table and first find all static rules related to <code>rock</code></p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> p.permission_code</span><br><span class="line"><span class="keyword">FROM</span> permissions p</span><br><span class="line"><span class="keyword">JOIN</span> role_permissions rp <span class="keyword">ON</span> p.id <span class="operator">=</span> rp.permission_id</span><br><span class="line"><span class="keyword">WHERE</span> rp.role_id <span class="keyword">IN</span> (<span class="number">101</span>, <span class="number">102</span>);</span><br><span class="line"><span class="comment">-- result: &#123;&quot;model:train&quot;, &quot;model:view&quot;&#125;</span></span><br></pre></td></tr></table></figure>
-<p><code>Model: Train in &#39;results&#39;, RABC passes through Query all dynamic rules regarding roles </code>101<code>and</code>102&#96;, if</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> p.policy_document</span><br><span class="line"><span class="keyword">FROM</span> policies p</span><br><span class="line"><span class="keyword">JOIN</span> role_policies rp <span class="keyword">ON</span> p.id <span class="operator">=</span> rp.policy_id</span><br><span class="line"><span class="keyword">WHERE</span> rp.role_id <span class="keyword">IN</span> (<span class="number">101</span>, <span class="number">102</span>);</span><br><span class="line"><span class="comment">-- result: &#123;&quot;effect&quot;: &quot;Allow&quot;, &quot;action&quot;: [&quot;data:read&quot;], &quot;condition&quot;: &quot;user.attributes.department == &#x27; R&amp;D Department &#x27;...&#125;</span></span><br></pre></td></tr></table></figure>
-<p>Find <code>action=model: train</code> in it<br>If there is no such action, it is considered that ABAC has not been violated, and the API can be called.<br>If there is, parse the <code>condition</code> field:<br><code>User. attributes. department==&#39;R&amp;D Department&#39;</code><br><code>IP == 10.0.0.0</code><br>Then it can be called.</p>
+<h2 id="3-Process-Example"><a href="#3-Process-Example" class="headerlink" title="3. Process Example"></a>3. Process Example</h2><p>Assuming the resource subject to access control is a knowledge base, which includes: a public knowledge base (accessible to everyone for <code>read</code>), and a departmental database (accessible only to personnel of the department for <code>read</code>, and only to certain roles for <code>write</code>)<br>After logging in, user <code>rocky (role: editor; department: R&amp;D Department)</code> attempts to edit the R&amp;D Department document in the department knowledge base. The application code first queries the <code>roles</code> table to find the associated roles (which may be multiple)</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> role_id <span class="keyword">FROM</span> user_roles <span class="keyword">WHERE</span> user_id <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"><span class="comment">-- result 101 (editor)</span></span><br></pre></td></tr></table></figure>
+<p>Starting from the direct role <code>101</code>, recursively obtain all inherited roles through <code>parent_id</code>. Assume that <code>101</code> fully encompasses the permissions of <code>102</code></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- Recursive function</span></span><br><span class="line"><span class="comment">-- result 101, 102 (editor, viewer)</span></span><br></pre></td></tr></table></figure>
+<p>Query the <code>permissions</code> table and first find all static rules related to <code>rocky</code></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> p.permission_code</span><br><span class="line"><span class="keyword">FROM</span> permissions p</span><br><span class="line"><span class="keyword">JOIN</span> role_permissions rp <span class="keyword">ON</span> p.id <span class="operator">=</span> rp.permission_id</span><br><span class="line"><span class="keyword">WHERE</span> rp.role_id <span class="keyword">in</span> (<span class="number">101</span>, <span class="number">102</span>);</span><br><span class="line"><span class="comment">-- result: &#123;&quot;kb:read&quot;, &quot;kb:write&quot;&#125; (Basic read and write functions of the knowledge base)</span></span><br></pre></td></tr></table></figure>
+<p>It indicates that the basic read-write function of the knowledge base is available. At this point, the RBAC check has been passed, and the application code can return a user JSON, such as <code>&#123;user: 1, role: [101, 102], department: R&amp;D Department, perm: [read, write] ... &#125;</code><br>However, further judgment is needed to determine whether Rocky has write permission for the R&amp;D department documents in one of the departmental knowledge bases. In this case, ABAC is introduced<br>Query the “policies” table using the code, and extract the “resources” JSON from “policy_document”, where <code>&#123;type: department, department: Development</code> .. }<code>It indicates that the document</code>rocky&#96; intends to write is for the departmental knowledge base of the R&amp;D department</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> p.policy_document</span><br><span class="line"><span class="keyword">FROM</span> policies p</span><br><span class="line"><span class="keyword">JOIN</span> role_policies rp <span class="keyword">ON</span> p.id <span class="operator">=</span> rp.policy_id</span><br><span class="line"><span class="keyword">WHERE</span> rp.role_id <span class="keyword">IN</span> (<span class="number">101</span>, <span class="number">102</span>);</span><br><span class="line"><span class="comment">-- result: &#123;&quot;effect&quot;: &quot;Allow&quot;, &quot;action&quot;: [&quot;kb:read&quot;, &quot;kb:write&quot;], &quot;condition&quot;: &quot;resource.type&quot;: &quot;department&quot;, &quot;user.attributes.department == &#x27;Development&#x27;&quot;...&#125;</span></span><br></pre></td></tr></table></figure>
+<p>Among all the identified <code>policies</code>, compare the parsed resources json and user json. If <code>user.attributes.department == &#39;Development&#39;</code> and <code>&quot;resource.type&quot;: &quot;department&quot;</code>, then the document can be edited</p>
+<p>For the maintenance of the <code>role_policies</code> table, for the same role chain, it is generally only necessary to insert the <code>(role, policy)</code> pair for the lowest-level role, <code>Viewer</code><br>To maintain the ‘role_permissions’ table, simply insert the newly added permissions at a higher level</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(3, 10), -- Viewer: read</span><br><span class="line">(2, 20), -- Editor: write (automatically inherits from read)</span><br><span class="line">(1, 30);  -- Admin : delete (automatically inherits write, read)</span><br></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2025/10/16/rbac-vs-abac/" data-id="cuidtjaE0_qyWWyCWNrPzEPKT" data-title="RBAC vs ABAC" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2025/10/28/rbac-vs-abac/" data-id="cuidviX-zzoOINrAqemGpGPbU" data-title="RBAC vs ABAC" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ABAC/" rel="tag">ABAC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQL/" rel="tag">SQL</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ABAC/" rel="tag">ABAC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Architecture/" rel="tag">Architecture</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQL/" rel="tag">SQL</a></li></ul>
 
     </footer>
   </div>
@@ -155,8 +161,8 @@
   
     <article id="post-hello-world" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2025/10/16/hello-world/" class="article-date">
-  <time class="dt-published" datetime="2025-10-16T07:52:18.237Z" itemprop="datePublished">2025-10-16</time>
+    <a href="/2025/10/28/hello-world/" class="article-date">
+  <time class="dt-published" datetime="2025-10-28T03:41:39.175Z" itemprop="datePublished">2025-10-28</time>
 </a>
     
   </div>
@@ -167,7 +173,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/10/16/hello-world/">Hello World</a>
+      <a class="p-name article-title" href="/2025/10/28/hello-world/">Hello World</a>
     </h1>
   
 
@@ -192,7 +198,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2025/10/16/hello-world/" data-id="cuidhAk3U1x54IPFh9-QcyvxV" data-title="Hello World" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2025/10/28/hello-world/" data-id="cuidWuF_-rSX9aX__jZDtlWmL" data-title="Hello World" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -211,7 +217,7 @@
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Algorithm/">Algorithm</a>►<a class="article-category-link" href="/categories/Algorithm/Math/">Math</a>
+    <a class="article-category-link" href="/categories/Algorithm/">Algorithm</a>►<a class="article-category-link" href="/categories/Algorithm/Math/"> Math</a>
   </div>
 
   </div>
@@ -297,7 +303,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2025/10/12/analysis-of-title-hierarchy-structure/" data-id="cuidgGyYnzvgqSLo5ZWh44lci" data-title="Analysis of Title Hierarchy Structure" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2025/10/12/analysis-of-title-hierarchy-structure/" data-id="cuidZr0xmllfecIwMfZvTq7jf" data-title="Analysis of Title Hierarchy Structure" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -321,7 +327,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/Math/">Math</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Database/System-Architecture/">System Architecture</a></li></ul></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/Math/"> Math</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a></li></ul>
     </div>
   </div>
 
@@ -331,7 +337,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ABAC/" rel="tag">ABAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtracking/" rel="tag">Backtracking</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSP/" rel="tag">CSP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/" rel="tag">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Recursion/" rel="tag">Recursion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/" rel="tag">SQL</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ABAC/" rel="tag">ABAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/" rel="tag">Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtracking/" rel="tag">Backtracking</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSP/" rel="tag">CSP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/" rel="tag">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Recursion/" rel="tag">Recursion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/" rel="tag">SQL</a></li></ul>
     </div>
   </div>
 
@@ -341,7 +347,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/ABAC/" style="font-size: 10px;">ABAC</a> <a href="/tags/Algorithm/" style="font-size: 10px;">Algorithm</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/CSP/" style="font-size: 10px;">CSP</a> <a href="/tags/DFS/" style="font-size: 10px;">DFS</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/SQL/" style="font-size: 10px;">SQL</a>
+      <a href="/tags/ABAC/" style="font-size: 10px;">ABAC</a> <a href="/tags/Algorithm/" style="font-size: 10px;">Algorithm</a> <a href="/tags/Architecture/" style="font-size: 10px;">Architecture</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/CSP/" style="font-size: 10px;">CSP</a> <a href="/tags/DFS/" style="font-size: 10px;">DFS</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/SQL/" style="font-size: 10px;">SQL</a>
     </div>
   </div>
 
@@ -363,11 +369,11 @@
       <ul>
         
           <li>
-            <a href="/2025/10/16/rbac-vs-abac/">RBAC vs ABAC</a>
+            <a href="/2025/10/28/rbac-vs-abac/">RBAC vs ABAC</a>
           </li>
         
           <li>
-            <a href="/2025/10/16/hello-world/">Hello World</a>
+            <a href="/2025/10/28/hello-world/">Hello World</a>
           </li>
         
           <li>
