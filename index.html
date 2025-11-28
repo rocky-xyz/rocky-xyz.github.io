@@ -73,8 +73,8 @@
   
     <article id="post-hello-world" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2025/11/21/hello-world/" class="article-date">
-  <time class="dt-published" datetime="2025-11-21T09:21:23.937Z" itemprop="datePublished">2025-11-21</time>
+    <a href="/2025/11/28/hello-world/" class="article-date">
+  <time class="dt-published" datetime="2025-11-28T05:53:49.692Z" itemprop="datePublished">2025-11-28</time>
 </a>
     
   </div>
@@ -85,7 +85,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/11/21/hello-world/">Hello World</a>
+      <a class="p-name article-title" href="/2025/11/28/hello-world/">Hello World</a>
     </h1>
   
 
@@ -94,7 +94,7 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+<h2 id="1-Quick-Start"><a href="#1-Quick-Start" class="headerlink" title="1. Quick Start"></a>1. Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
 <h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">--- </span><br><span class="line">title:</span><br><span class="line">date: </span><br><span class="line">tags: </span><br><span class="line">categories: </span><br></pre></td></tr></table></figure>
@@ -116,10 +116,75 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2025/11/21/hello-world/" data-id="cuidmYADhvOQqhMDX_K4V9K_r" data-title="Hello World" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2025/11/28/hello-world/" data-id="cuidqcwnzSpwIOybYF5kLDsKs" data-title="Hello World" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-excel-header-parsing" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/11/21/excel-header-parsing/" class="article-date">
+  <time class="dt-published" datetime="2025-11-21T16:30:00.000Z" itemprop="datePublished">2025-11-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Algorithm/">Algorithm</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/11/21/excel-header-parsing/">Excel Header Parsing</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><strong>Abstract:</strong> This report aims to introduce a methodology for robustly extracting structured data from Excel, containing multi-layer headers by using pandas(Python) only. And in the end the weakness of this method will be shown. </p>
+<hr>
+<h2 id="1-Problem-Description"><a href="#1-Problem-Description" class="headerlink" title="1. Problem Description"></a>1. Problem Description</h2><p>Normally, an Excel table is composed by couples of header lines and data lines. For a multi-layer headers table, the header may looks like this:</p>
+<img src="/2025/11/21/excel-header-parsing/img1.png" class="" title="Table_Header">
+
+<p>And in pandas’ view,  it looks like that(N for nan):</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a b    N     N   c</span><br><span class="line">N b1   N     b2  N</span><br><span class="line">N b1.1 b1.2  N   N</span><br><span class="line">any value in first data line can be N or not N</span><br></pre></td></tr></table></figure>
+
+<p>The purpose is extracting headers from whole table.</p>
+<hr>
+<h2 id="2-Solution-and-Algorithm-Design"><a href="#2-Solution-and-Algorithm-Design" class="headerlink" title="2. Solution and Algorithm Design"></a>2. Solution and Algorithm Design</h2><p>Assuming 1:<br>	We are able to find the start of the header. Maybe line 0 or maybe some filters can be used.<br>Assuming 2:<br>	The values in first line of data block must be different to the last line of header block.</p>
+<p>In each line, we are trying to find if next line is valid header. Let <code>A, B</code> to be current line and next line. And let <code>S</code> to be a statue of judging wether current value is a potential merge cell. </p>
+<p>Firstly, find the right value of <code>Ai</code>, if <code>Ai</code> is not nan, <code>Ai+1</code> is not nan, it means <code>Ai</code> absolutely is not a merge cell, like <code>a</code> in my example. Set <code>s = False</code></p>
+<p>If <code>Ai</code> is not nan and <code>Ai+1</code> is nan, it  means we can consider <code>Ai</code> as a potential merge cell, like <code>b, b1, b2, b1.2</code>.  Set <code>s = True</code>.</p>
+<p>Secondly, another judging should be done. If <code>s = True</code>, it means the value below it can be anything, like <code>b1 != b, b1.1 != b1</code>. </p>
+<p>If <code>s = False</code>,  if <code>Bi</code> is nan, it is valid for next line is table, like <code>Ai = a; Bi = N</code>.</p>
+<p>If <code>s = False</code>, if <code>Bi != nan and Ai != Bi</code>, as Assuming 2, it means <code>B</code> is not header anymore. So we can say the last line of header is <code>A</code>.</p>
+<h3 id="Algorithm-Implementation-Python"><a href="#Algorithm-Implementation-Python" class="headerlink" title="Algorithm Implementation (Python)"></a>Algorithm Implementation (Python)</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">is_valid</span>(<span class="params">upper, lower</span>):</span><br><span class="line">has_digit = <span class="built_in">any</span>(<span class="built_in">str</span>(cell).replace(<span class="string">&#x27;.&#x27;</span>,<span class="string">&#x27;&#x27;</span>).isdigit() <span class="keyword">for</span> cell <span class="keyword">in</span> lower <span class="keyword">if</span> pd.notna(cell))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> has_digit:</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">length = <span class="built_in">len</span>(upper)</span><br><span class="line">statue = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(length):</span><br><span class="line">	val0 = upper.iloc[i]</span><br><span class="line">	val1 = lower.iloc[i]</span><br><span class="line">	str0 = <span class="built_in">str</span>(val0).replace(<span class="string">&#x27;\n&#x27;</span>, <span class="string">&#x27;&#x27;</span>).strip() <span class="keyword">if</span> pd.notna(val0) <span class="keyword">else</span> <span class="string">&quot;&quot;</span></span><br><span class="line">	str1 = <span class="built_in">str</span>(val1).replace(<span class="string">&#x27;\n&#x27;</span>, <span class="string">&#x27;&#x27;</span>).strip() <span class="keyword">if</span> pd.notna(val1) <span class="keyword">else</span> <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> pd.notna(val0):</span><br><span class="line">		<span class="keyword">if</span> i + <span class="number">1</span> &lt; length <span class="keyword">and</span> pd.isna(upper.iloc[i+<span class="number">1</span>]): <span class="comment"># right is nan</span></span><br><span class="line">			statue = <span class="literal">True</span></span><br><span class="line">		<span class="keyword">else</span>: <span class="comment"># right not nan</span></span><br><span class="line">			statue = <span class="literal">False</span></span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> statue:</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">if</span> str1 == <span class="string">&quot;&quot;</span> <span class="keyword">or</span> str1.lower() == <span class="string">&#x27;nan&#x27;</span>:</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line">	<span class="keyword">elif</span> str1 != str0:</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-Deficiency"><a href="#3-Deficiency" class="headerlink" title="3. Deficiency"></a>3. Deficiency</h2><p>The biggest problem would be the situation like <code>Ai = b1.2</code>. In this circumstance, <code>Ai</code> would be recognised as a potential merge cell, but actually the <code>Ai+1 = N</code> is belongs to <code>b2</code>.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/11/21/excel-header-parsing/" data-id="cuidFf-Q_b83d2Gf50gajUkCj" data-title="Excel Header Parsing" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dynamic/" rel="tag">Dynamic</a></li></ul>
+
     </footer>
   </div>
   
@@ -202,11 +267,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2025/10/28/rbac-vs-abac/" data-id="cuid5Bs2v5sr-oArc-csIbg3X" data-title="RBAC vs ABAC" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2025/10/28/rbac-vs-abac/" data-id="cuidKRYw4pUAaiwXpahh2Cmvp" data-title="RBAC vs ABAC" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ABAC/" rel="tag">ABAC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ABAC/" rel="tag">ABAC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Architecture/" rel="tag">Architecture</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQL/" rel="tag">SQL</a></li></ul>
 
     </footer>
   </div>
@@ -244,7 +309,7 @@
       
         <p><strong>Abstract:</strong> This report aims to analyze a specific type of integer sequence and derive all possible hierarchical structures for it. The core of the problem is to reconstruct the implicit, nested tree-like hierarchy from a flat, one-dimensional sequence representing heading numbers. The report specifies the constraints for this problem and provides a complete algorithm capable of finding all possible solutions. The analysis shows that multiple valid solutions may exist, classifying the problem as a Constraint Satisfaction Problem (CSP), which can be systematically solved using a backtracking algorithm.</p>
 <hr>
-<h3 id="1-Problem-Description"><a href="#1-Problem-Description" class="headerlink" title="1. Problem Description"></a><strong>1. Problem Description</strong></h3><p>Given an article that uses a consistent numbering format for its sections, how can we reconstruct its implicit tree-like hierarchical structure?</p>
+<h2 id="1-Problem-Description"><a href="#1-Problem-Description" class="headerlink" title="1. Problem Description"></a>1. Problem Description</h2><p>Given an article that uses a consistent numbering format for its sections, how can we reconstruct its implicit tree-like hierarchical structure?</p>
 <p>For example, given a sequence like:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1 xx</span><br><span class="line">2 xx</span><br><span class="line">1 xx</span><br><span class="line">2 xx</span><br><span class="line">3 xx</span><br><span class="line">1 xx</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
@@ -262,7 +327,7 @@
 </ol>
 <p><strong>Goal</strong>: To find and list all possible level assignment schemes that satisfy all the above rules.</p>
 <hr>
-<h3 id="2-Problem-Abstraction"><a href="#2-Problem-Abstraction" class="headerlink" title="2. Problem Abstraction"></a><strong>2. Problem Abstraction</strong></h3><p>This problem can be precisely modeled as a <strong>Constraint Satisfaction Problem (CSP)</strong>.</p>
+<h2 id="2-Problem-Abstraction"><a href="#2-Problem-Abstraction" class="headerlink" title="2. Problem Abstraction"></a>2. Problem Abstraction</h2><p>This problem can be precisely modeled as a <strong>Constraint Satisfaction Problem (CSP)</strong>.</p>
 <p>A CSP consists of three core components:</p>
 <ul>
 <li><p><strong>Variables</strong>: The unknowns we need to solve for. In this problem, the variables are the levels of each number in the sequence, which can be represented as a set <code>{L_0, L_1, ..., L_{n-1}}</code>, where <code>L_i</code> is the level of the <code>i</code>-th number in the sequence.</p>
@@ -285,8 +350,8 @@
 </li>
 </ul>
 <hr>
-<h3 id="3-Solution-and-Algorithm-Design"><a href="#3-Solution-and-Algorithm-Design" class="headerlink" title="3. Solution and Algorithm Design"></a><strong>3. Solution and Algorithm Design</strong></h3><p>A common and powerful method for solving CSPs is the <strong>Backtracking Algorithm</strong>. This algorithm systematically explores all possible solutions using a depth-first search (DFS) approach.</p>
-<h4 id="The-Problem-of-Multiple-Solutions"><a href="#The-Problem-of-Multiple-Solutions" class="headerlink" title="The Problem of Multiple Solutions"></a><strong>The Problem of Multiple Solutions</strong></h4><p>The <strong>sole reason</strong> for the existence of multiple solutions is as follows: when the algorithm processes a <strong>number that is not ‘1’</strong>, there are <strong>at least two or more</strong> theoretically possible levels it could be assigned to, both of which simultaneously satisfy the global “Same-Level Order Rule.”</p>
+<h2 id="3-Solution-and-Algorithm-Design"><a href="#3-Solution-and-Algorithm-Design" class="headerlink" title="3. Solution and Algorithm Design"></a>3. Solution and Algorithm Design</h2><p>A common and powerful method for solving CSPs is the <strong>Backtracking Algorithm</strong>. This algorithm systematically explores all possible solutions using a depth-first search (DFS) approach.</p>
+<h4 id="The-Problem-of-Multiple-Solutions"><a href="#The-Problem-of-Multiple-Solutions" class="headerlink" title="The Problem of Multiple Solutions"></a>The Problem of Multiple Solutions</h4><p>The <strong>sole reason</strong> for the existence of multiple solutions is as follows: when the algorithm processes a <strong>number that is not ‘1’</strong>, there are <strong>at least two or more</strong> theoretically possible levels it could be assigned to, both of which simultaneously satisfy the global “Same-Level Order Rule.”</p>
 <p>This occurs when a number meets the following conditions:</p>
 <ol>
 <li><p>It must be a number other than <code>1</code> in the sequence; let’s call it <code>X</code>.</p>
@@ -304,16 +369,16 @@
 </ul>
 </li>
 </ol>
-<h4 id="Algorithm-Implementation-Python"><a href="#Algorithm-Implementation-Python" class="headerlink" title="Algorithm Implementation (Python)"></a><strong>Algorithm Implementation (Python)</strong></h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">def find_all_structures(sequence):</span><br><span class="line"></span><br><span class="line">    if not sequence or sequence[0] != 1:</span><br><span class="line">        return []</span><br><span class="line"></span><br><span class="line">    solutions = []</span><br><span class="line"></span><br><span class="line">    def backtrack(index, current_levels):</span><br><span class="line">        if index == len(sequence):</span><br><span class="line">            solutions.append(list(current_levels))</span><br><span class="line">            return</span><br><span class="line"></span><br><span class="line">        current_num = sequence[index]</span><br><span class="line">        prev_level = current_levels[index - 1]</span><br><span class="line"></span><br><span class="line">        if current_num == 1:</span><br><span class="line">            new_level = prev_level + 1</span><br><span class="line">            current_levels.append(new_level)</span><br><span class="line">            backtrack(index + 1, current_levels)</span><br><span class="line">            current_levels.pop()</span><br><span class="line">            return</span><br><span class="line"></span><br><span class="line">        for potential_level in range(1, prev_level + 1):</span><br><span class="line">            last_sibling_value = -1</span><br><span class="line">            level_exists = False</span><br><span class="line">            for i in range(index - 1, -1, -1):</span><br><span class="line">                if current_levels[i] == potential_level:</span><br><span class="line">                    last_sibling_value = sequence[i]</span><br><span class="line">                    level_exists = True</span><br><span class="line">                    break</span><br><span class="line">            </span><br><span class="line">            is_valid = False</span><br><span class="line">            if level_exists:</span><br><span class="line">                if current_num == last_sibling_value + 1:</span><br><span class="line">                    is_valid = True</span><br><span class="line">            </span><br><span class="line">            if is_valid:</span><br><span class="line">                current_levels.append(potential_level)</span><br><span class="line">                backtrack(index + 1, current_levels)</span><br><span class="line">                current_levels.pop()</span><br><span class="line">                </span><br><span class="line">    backtrack(1, [1])</span><br><span class="line">    return solutions</span><br></pre></td></tr></table></figure>
+<h3 id="Algorithm-Implementation-Python"><a href="#Algorithm-Implementation-Python" class="headerlink" title="Algorithm Implementation (Python)"></a>Algorithm Implementation (Python)</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">find_all_structures</span>(<span class="params">sequence</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> sequence <span class="keyword">or</span> sequence[<span class="number">0</span>] != <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line"></span><br><span class="line">    solutions = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">backtrack</span>(<span class="params">index, current_levels</span>):</span><br><span class="line">        <span class="keyword">if</span> index == <span class="built_in">len</span>(sequence):</span><br><span class="line">            solutions.append(<span class="built_in">list</span>(current_levels))</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">        current_num = sequence[index]</span><br><span class="line">        prev_level = current_levels[index - <span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> current_num == <span class="number">1</span>:</span><br><span class="line">            new_level = prev_level + <span class="number">1</span></span><br><span class="line">            current_levels.append(new_level)</span><br><span class="line">            backtrack(index + <span class="number">1</span>, current_levels)</span><br><span class="line">            current_levels.pop()</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> potential_level <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, prev_level + <span class="number">1</span>):</span><br><span class="line">            last_sibling_value = -<span class="number">1</span></span><br><span class="line">            level_exists = <span class="literal">False</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(index - <span class="number">1</span>, -<span class="number">1</span>, -<span class="number">1</span>):</span><br><span class="line">                <span class="keyword">if</span> current_levels[i] == potential_level:</span><br><span class="line">                    last_sibling_value = sequence[i]</span><br><span class="line">                    level_exists = <span class="literal">True</span></span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">            </span><br><span class="line">            is_valid = <span class="literal">False</span></span><br><span class="line">            <span class="keyword">if</span> level_exists:</span><br><span class="line">                <span class="keyword">if</span> current_num == last_sibling_value + <span class="number">1</span>:</span><br><span class="line">                    is_valid = <span class="literal">True</span></span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> is_valid:</span><br><span class="line">                current_levels.append(potential_level)</span><br><span class="line">                backtrack(index + <span class="number">1</span>, current_levels)</span><br><span class="line">                current_levels.pop()</span><br><span class="line">                </span><br><span class="line">    backtrack(<span class="number">1</span>, [<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">return</span> solutions</span><br></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2025/10/12/analysis-of-title-hierarchy-structure/" data-id="cuid4y0zgKBVn43IzPvRl7at3" data-title="Analysis of Title Hierarchy Structure" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2025/10/12/analysis-of-title-hierarchy-structure/" data-id="cuidVUehgI0VE4j81vWtznrF5" data-title="Analysis of Title Hierarchy Structure" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Backtracking/" rel="tag">Backtracking</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSP/" rel="tag">CSP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/" rel="tag">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Recursion/" rel="tag">Recursion</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Backtracking/" rel="tag">Backtracking</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSP/" rel="tag">CSP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DFS/" rel="tag">DFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Recursion/" rel="tag">Recursion</a></li></ul>
 
     </footer>
   </div>
@@ -343,7 +408,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ABAC/" rel="tag">ABAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtracking/" rel="tag">Backtracking</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSP/" rel="tag">CSP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/" rel="tag">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Recursion/" rel="tag">Recursion</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ABAC/" rel="tag">ABAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/" rel="tag">Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backtracking/" rel="tag">Backtracking</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSP/" rel="tag">CSP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/" rel="tag">DFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dynamic/" rel="tag">Dynamic</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Recursion/" rel="tag">Recursion</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/" rel="tag">SQL</a></li></ul>
     </div>
   </div>
 
@@ -353,7 +418,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/ABAC/" style="font-size: 10px;">ABAC</a> <a href="/tags/Algorithm/" style="font-size: 10px;">Algorithm</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/CSP/" style="font-size: 10px;">CSP</a> <a href="/tags/DFS/" style="font-size: 10px;">DFS</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a>
+      <a href="/tags/ABAC/" style="font-size: 10px;">ABAC</a> <a href="/tags/Architecture/" style="font-size: 10px;">Architecture</a> <a href="/tags/Backtracking/" style="font-size: 10px;">Backtracking</a> <a href="/tags/CSP/" style="font-size: 10px;">CSP</a> <a href="/tags/DFS/" style="font-size: 10px;">DFS</a> <a href="/tags/Dynamic/" style="font-size: 10px;">Dynamic</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Recursion/" style="font-size: 10px;">Recursion</a> <a href="/tags/SQL/" style="font-size: 10px;">SQL</a>
     </div>
   </div>
 
@@ -375,7 +440,11 @@
       <ul>
         
           <li>
-            <a href="/2025/11/21/hello-world/">Hello World</a>
+            <a href="/2025/11/28/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2025/11/21/excel-header-parsing/">Excel Header Parsing</a>
           </li>
         
           <li>
