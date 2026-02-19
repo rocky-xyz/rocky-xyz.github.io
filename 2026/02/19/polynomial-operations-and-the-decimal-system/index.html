@@ -4,14 +4,19 @@
   <meta charset="utf-8">
   
   
-  <title>Tag: Architecture | Hexo</title>
+  <title>Polynomial Operations and The Decimal System | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://example.com/tags/Architecture/index.html">
+  <meta name="description" content="1.  Mathematical ModelingIn a decimal system, any two-digit number can be represented as a first-order polynomial where x&#x3D;10: N &#x3D; 10a + b, P(x) &#x3D; ax + b Where a is the tens-place coefficient and b is">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Polynomial Operations and The Decimal System">
+<meta property="og:url" content="http://example.com/2026/02/19/polynomial-operations-and-the-decimal-system/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1.  Mathematical ModelingIn a decimal system, any two-digit number can be represented as a first-order polynomial where x&#x3D;10: N &#x3D; 10a + b, P(x) &#x3D; ax + b Where a is the tens-place coefficient and b is">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-02-19T16:30:00.000Z">
+<meta property="article:modified_time" content="2026-02-19T05:31:02.402Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Logic">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
@@ -69,39 +74,70 @@
 </header>
 
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2025" class="archive-year">2025</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2025/10/28/rbac-vs-abac/" class="archive-article-date">
-  <time class="dt-published" datetime="2025-10-28T16:30:00.000Z" itemprop="datePublished">Oct 28</time>
+        <section id="main"><article id="post-polynomial-operations-and-the-decimal-system" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/02/19/polynomial-operations-and-the-decimal-system/" class="article-date">
+  <time class="dt-published" datetime="2026-02-19T16:30:00.000Z" itemprop="datePublished">2026-02-19</time>
 </a>
-      
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Math/">Math</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2025/10/28/rbac-vs-abac/">RBAC vs ABAC</a>
+    <h1 class="p-name article-title" itemprop="headline name">
+      Polynomial Operations and The Decimal System
     </h1>
   
 
-    </header>
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="1-Mathematical-Modeling"><a href="#1-Mathematical-Modeling" class="headerlink" title="1.  Mathematical Modeling"></a>1.  Mathematical Modeling</h2><p>In a decimal system, any two-digit number can be represented as a first-order polynomial where <code>x=10</code>:</p>
+<p><code>N = 10a + b, P(x) = ax + b</code></p>
+<p>Where <code>a</code> is the tens-place coefficient and <code>b</code> is the units-place coefficient.</p>
+<h2 id="2-Polynomial-Expansion"><a href="#2-Polynomial-Expansion" class="headerlink" title="2. Polynomial Expansion"></a>2. Polynomial Expansion</h2><p>When calculating the square of this number, it is equivalent to the binomial expansion of the polynomial:</p>
+<p><code>P(x)^2 = (ax + b)^2 = a^2x^2 + 2abx + b^2</code></p>
+<h2 id="3-Carrying-Logic-and-Coefficient-Mapping"><a href="#3-Carrying-Logic-and-Coefficient-Mapping" class="headerlink" title="3. Carrying Logic and Coefficient Mapping"></a>3. Carrying Logic and Coefficient Mapping</h2><p>In pure algebra, the coefficients <code>a^2</code>, <code>2ab</code>, and <code>b^2</code> are independent. However, in decimal arithmetic, if a coefficient exceeds the base <code>10</code>, a <strong>carrying operation</strong> is triggered.</p>
+<h3 id="Case-A-Without-Carrying"><a href="#Case-A-Without-Carrying" class="headerlink" title="Case A: Without Carrying"></a>Case A: Without Carrying</h3><p>Take <code>13^2</code> as an example, where <code>a=1, b=3</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- a^2 = 1^2 = 1</span><br><span class="line">    </span><br><span class="line">- 2ab = 2(1)(3) = 6</span><br><span class="line">    </span><br><span class="line">- b^2 = 3^2 = 9</span><br><span class="line">    </span><br><span class="line">    The final result is 625.</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+<h3 id="Case-B-With-Carrying"><a href="#Case-B-With-Carrying" class="headerlink" title="Case B: With Carrying"></a>Case B: With Carrying</h3><p>Take <code>25^2</code> as an example, where <code>a=2, b=5</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- a^2 = 4, \quad 2ab = 20, \quad b^2 = 25</span><br><span class="line">    </span><br><span class="line">- b^2=25, keep 5,  2.</span><br><span class="line">    </span><br><span class="line">- 2ab=20, 20+2=22，keep 2，carry 2.</span><br><span class="line">    </span><br><span class="line">- a^2=4, 4+2=6，got 6.</span><br><span class="line">    </span><br><span class="line">    The final result is 625.</span><br></pre></td></tr></table></figure>
+<h3 id="4-Conclusion"><a href="#4-Conclusion" class="headerlink" title="4. Conclusion"></a>4. Conclusion</h3><p>Arithmetic operations in positional notation are essentially evaluations of polynomials at <code>x=10</code>. This discovery reveals the isomorphism between the <strong>Place-Value Principle</strong> and <strong>Algebraic Expansion</strong>. </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/02/19/polynomial-operations-and-the-decimal-system/" data-id="cuideX_Jp8fieI1DdPuWMQMQc" data-title="Polynomial Operations and The Decimal System" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Logic/" rel="tag">Logic</a></li></ul>
+
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2026/02/19/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-  
-    </div></section>
-  
 
 
 </section>
